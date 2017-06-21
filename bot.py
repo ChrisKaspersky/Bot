@@ -1,6 +1,7 @@
 import logging #Библиотека для ведения логов, потом пригодится
 import vk.exceptions #Модуль с описанием исключений связанных с API
 import time
+import urllib.error
 from datetime import datetime
 
 logging.basicConfig(format='[# %(levelname)-10s [%(asctime)s]  %(message)s', level=logging.INFO)
@@ -45,10 +46,16 @@ log("Начат приём сообщений")
 
 last_message = ''
 while True:
-    last_message=api.messages.get(out=0,count=1)
-    the_lastest_message=api.messages.getHistory(count=1, user_id=last_message[1]['uid'])
-    if (the_lastest_message[1]['body']==last_message[1]['body']) and (the_lastest_message[1]['uid']!=434145659):
-        api.messages.send(user_id=last_message[1]['uid'], message=answer(last_message[1]['body']))
-        log("Сообщение отправлено: " + answer(last_message[1]['body']))
-    time.sleep(2)
+    try:
+        last_message=api.messages.get(out=0,count=1)
+        the_lastest_message=api.messages.getHistory(count=1, user_id=last_message[1]['uid'])
+        if (the_lastest_message[1]['body']==last_message[1]['body']) and (the_lastest_message[1]['uid']!=434145659):
+            api.messages.send(user_id=last_message[1]['uid'], message=answer(last_message[1]['body']))
+            log("Сообщение отправлено: " + answer(last_message[1]['body']))
+        time.sleep(2)
+    except ConnectionError:
+        session = vk.Session(access_token=token)
+        api = vk.API(session)
+
+
 
