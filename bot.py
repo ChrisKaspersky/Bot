@@ -50,7 +50,9 @@ while True:
         the_lastest_message[1]['body']=the_lastest_message[1]['body'].lower()
         if (the_lastest_message[1]['body']==last_message[1]['body']) and (the_lastest_message[1]['uid']!=434145659):
             api.messages.send(user_id=last_message[1]['uid'], message=answer(last_message[1]['body']))
-            log("Сообщение отправлено: " + answer(last_message[1]['body']))
+            sender = api.users.get(user_ids=last_message[1]['uid'])[0]['first_name'] + ' ' + api.users.get(user_ids=last_message[1]['uid'])[0]['last_name']
+            log('('+ sender + ')' + "Сообщение принято: " + last_message[1]['body'])
+            log('('+ sender + ')' + "Сообщение отправлено: " + answer(last_message[1]['body']))
         time.sleep(2)
     except ConnectionError:
         log("Соединение разорвано, попытка подключения")
