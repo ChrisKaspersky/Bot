@@ -1,7 +1,8 @@
 import logging #Библиотека для ведения логов, потом пригодится
 import vk.exceptions #Модуль с описанием исключений связанных с API
 import time
-import urllib.error
+import requests.packages.urllib3.exceptions
+import requests.exceptions
 from datetime import datetime
 
 logging.basicConfig(format='[# %(levelname)-10s [%(asctime)s]  %(message)s', level=logging.INFO)
@@ -54,7 +55,7 @@ while True:
             log('('+ sender + ')' + "Сообщение принято: " + last_message[1]['body'])
             log('('+ sender + ')' + "Сообщение отправлено: " + answer(last_message[1]['body']))
         time.sleep(2)
-    except ConnectionError:
+    except requests.packages.urllib3.exceptions.ReadTimeoutError or requests.exceptions.ReadTimeout:
         log("Соединение разорвано, попытка подключения")
         try:
             session = vk.Session(access_token=token)
