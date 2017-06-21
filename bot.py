@@ -13,8 +13,6 @@ quests={'привет':'Привет.','дела':'Хорошо, как у те�
 
 
 def finder(message):
-	message2=message
-	noanswer=open('noanswers.txt','a')
 	message = message.replace('?','')
 	answer = ""
 	message=message.split(' ')
@@ -24,11 +22,7 @@ def finder(message):
 		except KeyError:
 			continue
 	if answer.replace(' ','') == "":
-
-		noanswer.write(str(message2)+'\n')
 		answer = 'И все таки я такого не знаю'
-	
-	noanswer.close()
 	return answer
 
 
@@ -67,6 +61,11 @@ while True:
 		the_lastest_message[1]['body']=the_lastest_message[1]['body'].lower()
 		if (the_lastest_message[1]['body']==last_message[1]['body']) and (the_lastest_message[1]['uid']!=434145659):
 			api.messages.send(user_id=last_message[1]['uid'], message=finder(last_message[1]['body']))
+			our_message=api.messages.get(out=1,count=1)
+			if our_message[1]['body']=='И все таки я такого не знаю':
+				noanswer=open('noanswers.txt','a')
+				noanswer.write(str(last_message[1]['body'])+'\n')
+				noanswer.close()
 			sender = api.users.get(user_ids=last_message[1]['uid'])[0]['first_name'] + ' ' + api.users.get(user_ids=last_message[1]['uid'])[0]['last_name']
 			log('('+ sender + ')' + "Сообщение принято: " + last_message[1]['body'])
 			log('('+ sender + ')' + "Сообщение отправлено: " + finder(last_message[1]['body']))
@@ -80,5 +79,5 @@ while True:
 		except vk.exceptions.VkAuthError:
 			log("Авторизация не удалась: неверный токен")
 			raise vk.exceptions.AUTHORIZATION_FAILED
-#
+
 
