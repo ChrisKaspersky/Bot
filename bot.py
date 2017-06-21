@@ -73,3 +73,4 @@ while True:
         except vk.exceptions.VkAuthError:
             log("Авторизация не удалась: неверный токен")
             raise vk.exceptions.AUTHORIZATION_FAILED
+#
