@@ -9,21 +9,21 @@ logging.basicConfig(format='[# %(levelname)-10s [%(asctime)s]  %(message)s', lev
 
 tokenfile = open('token.txt','r')
 
-quests={'привет':'Привет','как дела':'Хорошо, как у тебя','как дела?':'Хорошо, как у тебя?'}
-
+quests={'привет':'Привет','дела':'Хорошо, как у тебя'}
 
 def finder(message):
-	message=message.split(' ')
-	l=len(message)
-	h=3 #длина словаря (да здравствует костыль!)
-	for u in range (0,l):
-		slovo=message[u]
-		try:
-			return quests[slovo]
-		except KeyError:
-			j=j+1
-		if j==l-1:
-			return 'И все таки я такого не знаю'
+
+    answer = ""
+    message=message.split(' ')
+    l=len(message)
+    for word in message:
+        try:
+            answer=answer+' '+ quests[word]
+        except KeyError:
+            continue
+        if answer == "":
+            return 'И все таки я такого не знаю'
+    return answer
 	
 
 
@@ -64,12 +64,16 @@ while True:
         last_message[1]['body']=last_message[1]['body'].lower()
         the_lastest_message=api.messages.getHistory(count=1, user_id=last_message[1]['uid'])
         the_lastest_message[1]['body']=the_lastest_message[1]['body'].lower()
+        
+        
         if (the_lastest_message[1]['body']==last_message[1]['body']) and (the_lastest_message[1]['uid']!=434145659):
-            api.messages.send(user_id=last_message[1]['uid'], message=answer(last_message[1]['body']))
+            api.messages.send(user_id=last_message[1]['uid'], message=finder(last_message[1]['body']))
             sender = api.users.get(user_ids=last_message[1]['uid'])[0]['first_name'] + ' ' + api.users.get(user_ids=last_message[1]['uid'])[0]['last_name']
             log('('+ sender + ')' + "Сообщение принято: " + last_message[1]['body'])
-            log('('+ sender + ')' + "Сообщение отправлено: " + answer(last_message[1]['body']))
+            log('('+ sender + ')' + "Сообщение отправлено: " + finder(last_message[1]['body']))
         time.sleep(2)
+        
+        
     except requests.packages.urllib3.exceptions.ReadTimeoutError or requests.exceptions.ReadTimeout:
         log("Соединение разорвано, попытка подключения")
         try:
