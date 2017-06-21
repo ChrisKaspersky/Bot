@@ -9,16 +9,16 @@ logging.basicConfig(format='[# %(levelname)-10s [%(asctime)s]  %(message)s', lev
 
 tokenfile = open('token.txt','r')
 
-quests={'привет':'Привет','дела':'Хорошо, как у тебя'}
+quests={'привет':'Привет.','дела':'Хорошо, как у тебя?'}
 
 def finder(message):
-
+    message = message.replace('?','')
     answer = ""
     message=message.split(' ')
     l=len(message)
     for word in message:
         try:
-            answer=answer+' '+ quests[word]
+            answer=answer + ' ' + quests[word]
         except KeyError:
             continue
         if answer == "":
@@ -34,13 +34,6 @@ def log(information): #Функция для вывода информации �
     writable_information = time + ": " + information.lower() +'\n'
     logs.write(writable_information)
     logs.close()
-
-
-def answer(vopr):
-    try:
-        return quests[vopr]
-    except KeyError:
-        return 'Я не знаю такого ответа'
 
 
 log("Сервис запущен") # Вывод инфы по авторизации
