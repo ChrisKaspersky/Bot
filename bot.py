@@ -12,6 +12,21 @@ tokenfile = open('token.txt','r')
 quests={'привет':'Привет','как дела':'Хорошо, как у тебя','как дела?':'Хорошо, как у тебя?'}
 
 
+def finder(message):
+	message=message.split(' ')
+	l=len(message)
+	h=3 #длина словаря (да здравствует костыль!)
+	for u in range (0,l):
+		slovo=message[u]
+		try:
+			return quests[slovo]
+		except KeyError:
+			j=j+1
+		if j==l-1:
+			return 'И все таки я такого не знаю'
+	
+
+
 def log(information): #Функция для вывода информации в консоль и автоматической дозаписи лога
     logs = open('logs.txt', 'a')
     logging.info(information)
